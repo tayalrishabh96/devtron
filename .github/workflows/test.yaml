@@ -1,29 +1,39 @@
-name: 'SQL folder misconfiguration checker'
+name: Check SQL Files in Pull Request
+
 on:
   pull_request:
     paths:
-      - 'scripts/sql/*' # Specify the path to your SQL folder
+      - 'scripts/sql/**'
 
 jobs:
-  check:
+  check-sql-files:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check PR Files
-      id: check_files
+    - name: Checkout code
       uses: actions/checkout@v2
-    - name: Check File Notation
+
+    - name: Find new SQL files
+      id: find-sql-files
       run: |
-        cd scripts/sql
-        ls -a 
-        echo "==============="
-        git diff --name-only
-        echo "==============="
-        for file in $(git diff --name-only); do
-          if [[ "$file" == scripts/sql/*.up.sql || "$file" == scripts/sql/*.down.sql ]]; then
-            echo "File $file follows the notation."
+        if [[ -n "$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'scripts/sql/')" ]]; then
+          echo "::set-output name=has-new-sql-files::true"
+        fi
+      shell: bash
+
+    - name: Check notation in SQL files
+      if: steps.find-sql-files.outputs.has-new-sql-files == 'true'
+      run: |
+        # Define your notation pattern here
+        notation_pattern="your-notation-pattern"
+
+        # Loop through SQL files and check for the notation pattern
+        for file in $(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'scripts/sql/'); do
+          if grep -q "$notation_pattern" "$file"; then
+            echo "Notation pattern found in $file"
           else
-            echo "File $file does not follow the notation."
+            echo "Notation pattern not found in $file"
             exit 1
           fi
         done
+      shell: bash
