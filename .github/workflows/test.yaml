@@ -22,7 +22,9 @@ jobs:
       run: |
         cd scripts/sql
         ls -a 
+        echo "==============="
         git diff --name-only
+        echo "==============="
         for file in $(git diff --name-only); do
           if [[ "$file" == scripts/sql/*.up.sql || "$file" == scripts/sql/*.down.sql ]]; then
             echo "File $file follows the notation."
