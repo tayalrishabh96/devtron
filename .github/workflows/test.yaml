@@ -12,12 +12,6 @@ jobs:
     - name: Check PR Files
       id: check_files
       uses: actions/checkout@v2
-    - name: test
-      run: |
-        echo "==========="
-        ls -l
-        pwd
-        echo "==========="
     - name: Check File Notation
       run: |
         cd scripts/sql
