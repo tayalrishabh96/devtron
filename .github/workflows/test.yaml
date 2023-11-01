@@ -16,24 +16,4 @@ jobs:
     - name: Find new SQL files
       id: find-sql-files
       run: |
-        if [[ -n "$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'scripts/sql/')" ]]; then
-          echo "::set-output name=has-new-sql-files::true"
-        fi
-      shell: bash
-
-    - name: Check notation in SQL files
-      if: steps.find-sql-files.outputs.has-new-sql-files == 'true'
-      run: |
-        # Define your notation pattern here
-        notation_pattern="your-notation-pattern"
-
-        # Loop through SQL files and check for the notation pattern
-        for file in $(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep 'scripts/sql/'); do
-          if grep -q "$notation_pattern" "$file"; then
-            echo "Notation pattern found in $file"
-          else
-            echo "Notation pattern not found in $file"
-            exit 1
-          fi
-        done
-      shell: bash
+          git diff main HEAD
