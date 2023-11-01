@@ -16,4 +16,13 @@ jobs:
     - name: Find new SQL files
       id: find-sql-files
       run: |
-          git diff main HEAD
+          pwd
+          cd /scripts/sql
+          
+          git remote -v
+
+          
+          
+          git diff origin/master HEAD
+
+
