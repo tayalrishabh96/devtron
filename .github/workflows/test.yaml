@@ -1,28 +1,25 @@
-name: Check SQL Files in Pull Request
-
+name: 'SQL folder misconfiguration checker'
 on:
   pull_request:
     paths:
-      - 'scripts/sql/**'
+      - 'scripts/sql/*' # Specify the path to your SQL folder
 
 jobs:
-  check-sql-files:
+  check:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Check PR Files
+      id: check_files
       uses: actions/checkout@v2
-
-    - name: Find new SQL files
-      id: find-sql-files
+      
+    - name: Check File Notation
       run: |
-          pwd
-          cd /scripts/sql
-          
-          git remote -v
-
-          
-          
-          git diff origin/master HEAD
+        cd scripts/sql
+        ls -a 
+        echo "==============="
+        git diff --name-only
+        echo "==============="
+        git diff origin/master HEAD
 
 
