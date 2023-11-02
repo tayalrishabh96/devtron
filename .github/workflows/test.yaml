@@ -25,6 +25,12 @@ jobs:
         shell: bash
         run: |
           git fetch origin main
-          git diff origin/main..HEAD --name-only > mydiff
+          git diff origin/main...HEAD --name-only > mydiff
           echo "mydiff = "
           cat mydiff
+          echo "==============="
+          git diff origin/main..HEAD --name-only |grep -i /scripts/sql/ > grepdiff
+          cat grepdiff
+          echo "==============="
+
+          
