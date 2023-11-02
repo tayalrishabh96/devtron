@@ -30,7 +30,6 @@ jobs:
           cat mydiff
           echo "==============="
           git diff origin/main..HEAD --name-only | grep '^scripts/sql/'         
-          cat grepdiff
           echo "==============="
 
           
