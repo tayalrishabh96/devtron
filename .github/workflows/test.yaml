@@ -29,7 +29,7 @@ jobs:
           echo "mydiff = "
           cat mydiff
           echo "==============="
-          git diff origin/main..HEAD --name-only |grep -i /scripts/sql/ > grepdiff
+          git diff origin/main..HEAD --name-only | grep '^scripts/sql/'         
           cat grepdiff
           echo "==============="
 
