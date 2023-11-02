@@ -4,7 +4,8 @@ on:
   pull_request:
     branches: [main]
     types: [opened]
-
+    paths:
+      - 'scripts/sql/*' # Specify the path to your SQL folder
 jobs:
   Job1:
     runs-on: ubuntu-latest
@@ -24,6 +25,6 @@ jobs:
         shell: bash
         run: |
           git fetch origin main
-          git diff origin/main..HEAD > mydiff
+          git diff origin/main..HEAD --name-only > mydiff
           echo "mydiff = "
           cat mydiff
