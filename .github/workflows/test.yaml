@@ -42,7 +42,7 @@ jobs:
               echo "File name is in the correct format: $filename"
             else
               echo "File name is not in the correct format: $filename"
-              gh pr edit $pr_no --add-label "PR:Not-in-corect-sql-format"
+              gh pr comment $pr_no --body "The SQL File name is not in the correct format: $filename."
               exit 1 
             fi
           done
