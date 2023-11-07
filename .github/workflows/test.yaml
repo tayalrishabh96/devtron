@@ -26,8 +26,9 @@ jobs:
         shell: bash
         env: 
           pr_no: ${{ github.event.pull_request.number }}
-          GH_TOKEN: ${{ github.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
+          echo $GH_TOKEN
           git fetch origin main
           git diff origin/main...HEAD --name-only > mydiff
           echo "mydiff = "
