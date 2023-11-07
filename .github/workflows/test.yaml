@@ -1,4 +1,4 @@
-name: Test workflow
+name: SQL FILE VALIDATOR
 
 on:
   pull_request:
