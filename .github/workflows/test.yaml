@@ -45,7 +45,9 @@ jobs:
               gh pr comment $pr_no --body "The SQL File name is not in the correct format: $filename."
               exit 1 
             fi
-            cd /scripts/sql/
+            pwd 
+            
+            cd scripts/sql/
             pwd
             migration_no= $(echo $filename | cut -d "/" -f 3 |cut -d "_" -f 1)
             migration_files_of_this_no=$(ls |grep -i $migration_no |wc -l)
