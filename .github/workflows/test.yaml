@@ -17,12 +17,11 @@ jobs:
           echo "PR author: ${PR_AUTHOR_GITHUB_ID}"
       - name: Checkout pull request HEAD
         id: checkout_pr_head
-        uses: actions/checkout@v2
-      - name: env variables
-        env: 
-          pr_no: ${{ github.event.pull_request.number }}
+        uses: actions/checkout@v2        
       - name: print-diff
         shell: bash
+        env: 
+          pr_no: ${{ github.event.pull_request.number }}
         run: |
           git fetch origin main
           git diff origin/main...HEAD --name-only > mydiff
