@@ -45,8 +45,11 @@ jobs:
               gh pr comment $pr_no --body "The SQL File name is not in the correct format: $filename."
               exit 1 
             fi
-            migration_no= $(echo $badal | cut -d "_" -f 1)
+            migration_no= $(echo $filename | cut -d "_" -f 1)
             migration_files_of_this_no=$(ls |grep -i $migration_no |wc -l)
+
+            echo $migration_no
+            echo $migration_files_of_this_no
             if [[ $migration_files_of_this_no == "2" ]] ; then
               echo "All looks good "
             else 
