@@ -15,9 +15,13 @@ jobs:
       - name: Find Github id of PR AUTHOR
         run: |
           echo "PR author: ${PR_AUTHOR_GITHUB_ID}"
+        
       - name: Checkout pull request HEAD
         id: checkout_pr_head
         uses: actions/checkout@v2        
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
       - name: print-diff
         shell: bash
         env: 
