@@ -132,45 +132,44 @@ jobs:
           pr_no: ${{ github.event.pull_request.number }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: |
-          echo "GitHub Token: $GH_TOKEN"
+          echo "GitHub Token: $GITHUB_TOKEN"
+          
+          # Fetch the latest changes from the main branch
           git fetch origin main
-          git diff origin/main...HEAD --name-only > mydiff
-          cat mydiff
-          echo "Changed SQL files:"
-          git diff origin/main...HEAD --name-only | grep '^scripts/sql/'
-          git diff origin/main...HEAD --name-only | grep '^scripts/sql/'|wc-l 
-          file_list=$(git diff origin/main..HEAD --name-only | grep '^scripts/sql/')
-          for filename in $file_list; do
+          
+          # Get the list of changed SQL files
+          changed_files=$(git diff --name-only origin/main...HEAD | grep '^scripts/sql/')
+
+          # Check if there are any SQL files
+          if [ -z "$changed_files" ]; then
+            echo "No SQL files found. Skipping this action."
+            exit 0
+          fi
+
+          # Loop through changed SQL files
+          for filename in $changed_files; do
             echo "Checking File: $filename"
-            
+
             if [[ "$filename" =~ \.(up|down)\.sql$ ]]; then
               echo "File name is in the correct format: $filename"
             else
               echo "Error: File name is not in the correct format: $filename."
               gh pr comment $pr_no --body "Error: The SQL file name is not in the correct format: $filename."
-              exit 1 
+              exit 1
             fi
-            echo "Current directory: $(pwd)"
-            
-            cd scripts/sql/
-            echo "SQL files directory: $(pwd)"
-            
-            migration_no=$(echo $filename | cut -d "/" -f 3 | cut -d "_" -f 1)
+
+            # Extract migration number
+            migration_no=$(basename $filename | cut -d "_" -f 1)
             echo "Migration Number: $migration_no"
-            
-            migration_files_of_this_no=$(ls | grep -i $migration_no | wc -l)
-            cd ../../
-            echo "Current directory: $(pwd)"
-            
-            echo "Migration Number: $migration_no"
-            echo "Number of files with this migration number: $migration_files_of_this_no"
-            
-            if [[ $migration_files_of_this_no == "2" ]] ; then
+
+            # Check for duplicates
+            migration_files_of_this_no=$(git ls-files scripts/sql/ | grep -E "^[0-9]+_${migration_no}_(up|down)\.sql" | wc -l)
+
+            if [ $migration_files_of_this_no -eq 2 ]; then
               echo "All looks good for this migration number."
-            else 
-               echo "Error: Migration number is repeated."
-               gh pr comment $pr_no --body "Error: The SQL file number is duplicated: $migration_no."
-               exit 1
+            else
+              echo "Error: Migration number is repeated."
+              gh pr comment $pr_no --body "Error: The SQL file number is duplicated: $migration_no."
+              exit 1
             fi
           done
-  
