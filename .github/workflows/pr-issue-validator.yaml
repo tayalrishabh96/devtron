@@ -137,8 +137,7 @@ jobs:
           git diff origin/main...HEAD --name-only > mydiff
           cat mydiff
           echo "Changed SQL files:"
-          git diff origin/main..HEAD --name-only | grep '^scripts/sql/'|wc -l
-          git diff origin/main..HEAD --name-only | grep '^scripts/sql/'
+          # git diff origin/main..HEAD --name-only | grep '^scripts/sql/'|wc -l
           count=$(git diff origin/main..HEAD --name-only | grep '^scripts/sql/'|wc -l)
           echo  $count
           if [[ $count == 0 ]]; then
