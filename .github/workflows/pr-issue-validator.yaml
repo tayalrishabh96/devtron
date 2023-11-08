@@ -137,14 +137,6 @@ jobs:
           git diff origin/main...HEAD --name-only > mydiff
           cat mydiff
           echo "Changed SQL files:"
-          # git diff origin/main..HEAD --name-only | grep '^scripts/sql/'|wc -l
-          count=$(git diff origin/main..HEAD --name-only | grep '^scripts/sql/'|wc -l)
-          echo  $count
-          if [[ $count == 0 ]]; then
-            echo "No file found. Skipping this Action Check"
-
-            exit 0
-          fi
           file_list=$(git diff origin/main..HEAD --name-only | grep '^scripts/sql/')
           for filename in $file_list; do
             echo "Checking File: $filename"
