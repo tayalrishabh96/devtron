@@ -30,8 +30,8 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
       with:
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
+        ref: ${{ github.event.pull_request.head.sha }}
+        fetch-depth: 0
 
 
     - name: Validate Issue Reference
@@ -137,6 +137,8 @@ jobs:
           git diff origin/main...HEAD --name-only > mydiff
           cat mydiff
           echo "Changed SQL files:"
+          git diff origin/main...HEAD --name-only | grep '^scripts/sql/'
+          git diff origin/main...HEAD --name-only | grep '^scripts/sql/'|wc-l 
           file_list=$(git diff origin/main..HEAD --name-only | grep '^scripts/sql/')
           for filename in $file_list; do
             echo "Checking File: $filename"
