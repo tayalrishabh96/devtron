@@ -142,6 +142,7 @@ jobs:
           count=$(git diff origin/main..HEAD --name-only | grep '^scripts/sql/'|wc -l)
           if [ "$count" -eq 0 ]; then
             echo "No file not found. Skipping this Action Check"
+            exit 0
           fi
 
           file_list=$(git diff origin/main..HEAD --name-only | grep '^scripts/sql/')
