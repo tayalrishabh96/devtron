@@ -142,7 +142,7 @@ jobs:
           count=$(git diff origin/main..HEAD --name-only | grep '^scripts/sql/'|wc -l)
           if [[count == "0"]] ; then
             exit 0
-            
+          fi
           file_list=$(git diff origin/main..HEAD --name-only | grep '^scripts/sql/')
           for filename in $file_list; do
             echo "Checking File: $filename"
