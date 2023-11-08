@@ -121,23 +121,36 @@ jobs:
             gh pr edit $PRNUM --remove-label "PR:Ready-to-Review"
             exit 1
         fi
-    
-    - name: Check SQL file format and duplicates
-      shell: bash
-      env: 
+  SQL-FILE-VALIDATOR: 
+    runs-on: ubuntu-latest
+    env:
+      PR_AUTHOR_GITHUB_ID: ${{ github.event.pull_request.user.login }}
+    steps:
+      - name: Find Github ID of PR AUTHOR
+        run: |
+          echo "PR author: ${PR_AUTHOR_GITHUB_ID}"
+        
+      - name: Checkout pull request HEAD
+        id: checkout_pr_head
+        uses: actions/checkout@v2        
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Check SQL file format and duplicates
+        shell: bash
+        env: 
           pr_no: ${{ github.event.pull_request.number }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      run: |
+        run: |
           echo "GitHub Token: $GH_TOKEN"
           git fetch origin main
           git diff origin/main...HEAD --name-only > mydiff
           echo "Changed SQL files:"
           cat mydiff
           echo "==============="
-
           file_list=$(git diff origin/main..HEAD --name-only | grep '^scripts/sql/')
           echo "==============="
-
           for filename in $file_list; do
             echo "Checking File: $filename"
             
@@ -171,3 +184,4 @@ jobs:
                exit 1
             fi
           done
+  
