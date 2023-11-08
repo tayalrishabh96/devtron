@@ -140,9 +140,10 @@ jobs:
           git diff origin/main..HEAD --name-only | grep '^scripts/sql/'|wc -l
           git diff origin/main..HEAD --name-only | grep '^scripts/sql/'
           count=$(git diff origin/main..HEAD --name-only | grep '^scripts/sql/'|wc -l)
-          if [[count == "0"]] ; then
-            exit 0
+          if [ "$count" -eq 0 ]; then
+            echo "No file not found. Skipping this Action Check"
           fi
+
           file_list=$(git diff origin/main..HEAD --name-only | grep '^scripts/sql/')
           for filename in $file_list; do
             echo "Checking File: $filename"
