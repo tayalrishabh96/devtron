@@ -136,10 +136,13 @@ jobs:
           
           # Fetch the latest changes from the main branch
           git fetch origin main
-          
+          pwd
+          echo "hello world"
           # Get the list of changed SQL files
           changed_files=$(git diff --name-only origin/main...HEAD | grep '^scripts/sql/')
+          echo $changed_files
 
+          
           # Check if there are any SQL files
           if [[ $changed_files == 0 ]] ; then
               echo "No SQL files found. Skipping this action."
