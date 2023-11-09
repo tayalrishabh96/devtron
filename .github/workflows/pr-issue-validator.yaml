@@ -141,9 +141,11 @@ jobs:
           changed_files=$(git diff --name-only origin/main...HEAD | grep '^scripts/sql/')
 
           # Check if there are any SQL files
-          if [ -z "$changed_files" ]; then
-            echo "No SQL files found. Skipping this action."
-            exit 0
+          if [[ $changed_files == 0 ]] ; then
+              echo "No SQL files found. Skipping this action."
+              exit 0
+          else 
+              echo "Find files. Running this action"
           fi
 
           # Loop through changed SQL files
