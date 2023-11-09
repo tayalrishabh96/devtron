@@ -140,11 +140,11 @@ jobs:
           echo "hello world"
           # Get the list of changed SQL files
           git diff --name-only origin/main...HEAD
-          git diff --name-only origin/main...HEAD | grep '^scripts/sql/' | wc -l > mydiff
+          git diff --name-only origin/main...HEAD | grep -E '^scripts/sql/' | wc -l > mydiff
           echo "Hii Rishab"
-          count=$(git diff --name-only origin/main...HEAD | grep '^scripts/sql/' | wc -l | tr -d '[:space:]')
+          count=$(git diff --name-only origin/main...HEAD | grep -E'^scripts/sql/' | wc -l | tr -d '[:space:]')
           echo "count=" $count
-          changed_files=$(git diff --name-only origin/main...HEAD | grep '^scripts/sql/')
+          changed_files=$(git diff --name-only origin/main...HEAD | grep -E'^scripts/sql/')
           echo $changed_files
 
           
@@ -171,15 +171,22 @@ jobs:
             # Extract migration number
             migration_no=$(basename $filename | cut -d "_" -f 1)
             echo "Migration Number: $migration_no"
-
-            # Check for duplicates
-            migration_files_of_this_no=$(git ls-files scripts/sql/ | grep -E "^[0-9]+_${migration_no}_(up|down)\.sql" | wc -l)
-
-            if [ $migration_files_of_this_no -eq 2 ]; then
+            migration_no=$(echo $filename | cut -d "/" -f 3 | cut -d "_" -f 1)
+            echo "Migration Number: $migration_no"
+            
+            migration_files_of_this_no=$(ls | grep -iE $migration_no | wc -l)
+            cd ../../
+            echo "Current directory: $(pwd)"
+            
+            echo "Migration Number: $migration_no"
+            echo "Number of files with this migration number: $migration_files_of_this_no"
+            
+            if [[ $migration_files_of_this_no == "2" ]] ; then
               echo "All looks good for this migration number."
-            else
-              echo "Error: Migration number is repeated."
-              gh pr comment $pr_no --body "Error: The SQL file number is duplicated: $migration_no."
-              exit 1
+            else 
+               echo "Error: Migration number is repeated."
+               gh pr comment $pr_no --body "Error: The SQL file number is duplicated: $migration_no."
+               exit 1
             fi
+
           done
