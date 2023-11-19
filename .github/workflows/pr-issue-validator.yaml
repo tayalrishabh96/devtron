@@ -136,9 +136,12 @@ jobs:
           git fetch origin main
           git diff origin/main...HEAD --name-only > mydiff
           echo "Changed SQL files:"
-          cat mydiff          
-          file_list=$(git diff origin/main..HEAD --name-only | grep '^scripts/sql/')
-          echo "$file_list"
+          cat mydiff
+          echo "==============="
+          git diff origin/main..HEAD --name-only | grep '^scripts/sql/'
+          file_list=$(git diff origin/main..HEAD --name-only)
+          echo "==============="
+          echo $file_list
           echo "==============="
           for filename in $file_list; do
             echo "Checking File: $filename"
@@ -150,22 +153,22 @@ jobs:
               gh pr comment $pr_no --body "Error: The SQL file name is not in the correct format: $filename."
               exit 1 
             fi
-            
             echo "Current directory: $(pwd)"
-            cd scripts/sql/ || exit
+            
+            cd scripts/sql/
             echo "SQL files directory: $(pwd)"
             
             migration_no=$(echo $filename | cut -d "/" -f 3 | cut -d "_" -f 1)
             echo "Migration Number: $migration_no"
             
             migration_files_of_this_no=$(ls | grep -i $migration_no | wc -l)
-            cd ../../ || exit
+            cd ../../
             echo "Current directory: $(pwd)"
             
             echo "Migration Number: $migration_no"
             echo "Number of files with this migration number: $migration_files_of_this_no"
             
-            if [[ $migration_files_of_this_no -eq 2 ]]; then
+            if [[ $migration_files_of_this_no == "2" ]] ; then
               echo "All looks good for this migration number."
             else 
                echo "Error: Migration number is repeated."
@@ -173,3 +176,4 @@ jobs:
                exit 1
             fi
           done
+
