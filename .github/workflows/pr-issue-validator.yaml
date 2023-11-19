@@ -138,8 +138,8 @@ jobs:
           echo "Changed SQL files:"
           cat mydiff
           echo "==============="
-          git diff origin/main..HEAD --name-only | grep '^scripts/sql/'
-          file_list=$(git diff origin/main..HEAD --name-only)
+          git diff origin/main...HEAD --name-only | grep '^scripts/sql/'
+          file_list=$(git diff origin/main...HEAD --name-only)
           echo "==============="
           echo $file_list
           echo "==============="
