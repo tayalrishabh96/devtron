@@ -141,8 +141,7 @@ jobs:
           file_list=$(git diff origin/main...HEAD --name-only)
           echo "Done"
           echo "==============="
-          echo $file_list | grep '^scripts/sql/'
-          
+          grep -qP "^scripts/sql/" <<< "$file_list"
           echo "==============="
           for filename in $file_list; do
             echo "Checking File: $filename"
