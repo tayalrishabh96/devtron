@@ -178,6 +178,7 @@ jobs:
             elif [[ $migration_files_of_this_no == "1" ]] ; then
               echo "Not Looks good . only $filename this file present."
               echo "Only single migration file was present for this No-  $migration_no"
+              gh pr comment $pr_no --body "Error: Only Single migration file was present for this no -: $migration_no."
               exit 1
             else 
                echo "Error: Migration number is repeated."
