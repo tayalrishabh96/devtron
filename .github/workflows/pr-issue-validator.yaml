@@ -137,12 +137,12 @@ jobs:
           git diff origin/main...HEAD --name-only > mydiff
           echo "Changed SQL files:"
           cat mydiff
-          echo "==============="
           file_list=$(git diff origin/main...HEAD --name-only)
           echo "Done"
           echo "==============="
           awk '/scripts\/sql\//' mydiff
-          count=awk '/scripts\/sql\//' mydiff | wc -l 
+          echo "==============="
+          count=$(awk '/scripts\/sql\//' mydiff | wc -l) 
           echo "==============="
           if [[ $count == "0" ]] ; then 
             echo "No Sql file is added .exiting from this action"
