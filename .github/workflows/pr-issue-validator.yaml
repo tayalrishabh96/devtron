@@ -175,6 +175,10 @@ jobs:
             
             if [[ $migration_files_of_this_no == "2" ]] ; then
               echo "All looks good for this migration number."
+            elif [[ $migration_files_of_this_no == "1" ]] ; then
+              echo "Not Looks good . only $filename this file present."
+              echo "Only single migration file was present for this No-  $migration_no"
+              exit 1
             else 
                echo "Error: Migration number is repeated."
                gh pr comment $pr_no --body "Error: The SQL file number is duplicated: $migration_no."
