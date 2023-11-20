@@ -144,7 +144,7 @@ jobs:
           awk '/scripts\/sql\//' mydiff
           count=awk '/scripts\/sql\//' mydiff | wc -l 
           echo "==============="
-          if [[ $count == 0 ]] ; then 
+          if [[ $count == "0" ]] ; then 
             echo "No Sql file is added .exiting from this action"
             exit 0
           fi
