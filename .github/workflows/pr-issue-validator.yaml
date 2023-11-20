@@ -142,8 +142,12 @@ jobs:
           echo "Done"
           echo "==============="
           awk '/scripts\/sql\//' mydiff
-          awk '/scripts\/sql\//' mydiff | wc -l 
+          count=awk '/scripts\/sql\//' mydiff | wc -l 
           echo "==============="
+          if [[ count == 0 ]]
+            echo "No Sql file is added exiting from this action"
+            exit 0
+          fi
           for filename in $file_list; do
             echo "Checking File: $filename"
             
