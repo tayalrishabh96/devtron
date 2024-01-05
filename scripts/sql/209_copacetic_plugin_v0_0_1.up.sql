@@ -42,7 +42,7 @@ docker run \
     --entrypoint buildkitd \
     "moby/buildkit:$BUILDKIT_VERSION"
 
-copa patch -i $registry/$repo:$tag -r $appName.json -t $tag --addr docker-container://buildkitd --timeout "$timeout"
+copa patch -i $registry/$repo:$tag -r $appName.json -t $tag --addr docker-container://buildkitd --timeout "$Timeout"
 
 trivy image --vuln-type os --ignore-unfixed $registry/$repo:$tag | grep -i total
 docker push $registry/$repo:$tag
