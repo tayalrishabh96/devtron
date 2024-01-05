@@ -1,5 +1,5 @@
 INSERT INTO plugin_metadata (id,name,description,type,icon,deleted,created_on,created_by,updated_on,updated_by)
-VALUES (nextval('id_seq_plugin_metadata'),'Copacetic v1.0.0','This plugin is used to patch the container image vulnerabilities (Currently this plugin can be used only for docker images not for docker buildx images).','PRESET','https://raw.githubusercontent.com/devtron-labs/devtron/copacetic-plugin/assets/copa-plugin-icon.png',false,'now()',1,'now()',1);
+VALUES (nextval('id_seq_plugin_metadata'),'Copacetic v1.0.0','This plugin is used to patch the container image vulnerabilities (Patching for Multi Architecture Builds not supported currently).','PRESET','https://raw.githubusercontent.com/devtron-labs/devtron/copacetic-plugin/assets/copa-plugin-icon.png',false,'now()',1,'now()',1);
 
 INSERT INTO plugin_stage_mapping (id,plugin_id,stage_type,created_on,created_by,updated_on,updated_by)
 VALUES (nextval('id_seq_plugin_stage_mapping'),(SELECT id from plugin_metadata where name='Copacetic v1.0.0'), 0,'now()',1,'now()',1);
@@ -13,6 +13,13 @@ export appName=$(echo $CI_CD_EVENT | jq --raw-output .commonWorkflowRequest.appN
 export registry=$(echo $CI_CD_EVENT | jq --raw-output .commonWorkflowRequest.dockerRegistryURL)
 export repo=$(echo $CI_CD_EVENT | jq --raw-output .commonWorkflowRequest.dockerRepository)
 export tag=$(echo $CI_CD_EVENT | jq --raw-output .commonWorkflowRequest.dockerImageTag)
+export platform=$(echo $CI_CD_EVENT | jq --raw-output .commonWorkflowRequest.ciBuildConfig.dockerBuildConfig.targetPlatform)
+
+if [[ $platform == "linux/arm64,linux/amd64" ]] ; then
+    echo "platform = $platform"
+    echo "######### Multi Platform Selected #########"
+    echo "Existing as Multi Architecture Builds not supported"
+    exit 0
 
 curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.46.1
 
