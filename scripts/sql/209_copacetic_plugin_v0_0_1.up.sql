@@ -18,41 +18,41 @@ export platform=$(echo $CI_CD_EVENT | jq --raw-output .commonWorkflowRequest.ciB
 if [[ $platform == "linux/arm64,linux/amd64" ]] ; then
     echo "platform = $platform"
     echo "######### Multi Platform Selected #########"
-    echo "Existing as Multi Architecture Builds not supported"
-    exit 0
+    echo "Existing from Copacetic Plugin Stage as Multi Architecture Builds not supported"
+else
+    curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.46.1
 
-curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.46.1
+    uname_arch() {
+    arch=$(uname -m)
+    case $arch in
+        x86_64) arch="amd64" ;;
+        aarch64) arch="arm64" ;;
+    esac
+    echo ${arch}
+    }
+    os=$(uname | tr "[:upper:]" "[:lower:]")
+    uname_arch
+    wget https://github.com/project-copacetic/copacetic/releases/download/v0.5.1/copa_0.5.1_${os}_${arch}.tar.gz
+    tar -xvzf copa_0.5.1_${os}_${arch}.tar.gz
+    mv copa /usr/local/bin/
 
-uname_arch() {
-  arch=$(uname -m)
-  case $arch in
-    x86_64) arch="amd64" ;;
-    aarch64) arch="arm64" ;;
-  esac
-  echo ${arch}
-}
-os=$(uname | tr "[:upper:]" "[:lower:]")
-uname_arch
-wget https://github.com/project-copacetic/copacetic/releases/download/v0.5.1/copa_0.5.1_${os}_${arch}.tar.gz
-tar -xvzf copa_0.5.1_${os}_${arch}.tar.gz
-mv copa /usr/local/bin/
+    trivy image --vuln-type os --ignore-unfixed $registry/$repo:$tag | grep -i total
+    trivy image --vuln-type os --ignore-unfixed -f json -o $appName.json $registry/$repo:$tag
 
-trivy image --vuln-type os --ignore-unfixed $registry/$repo:$tag | grep -i total
-trivy image --vuln-type os --ignore-unfixed -f json -o $appName.json $registry/$repo:$tag
+    export BUILDKIT_VERSION=v0.12.0
+    docker run \
+        --detach \
+        --rm \
+        --privileged \
+        --name buildkitd \
+        --entrypoint buildkitd \
+        "moby/buildkit:$BUILDKIT_VERSION"
 
-export BUILDKIT_VERSION=v0.12.0
-docker run \
-    --detach \
-    --rm \
-    --privileged \
-    --name buildkitd \
-    --entrypoint buildkitd \
-    "moby/buildkit:$BUILDKIT_VERSION"
+    copa patch -i $registry/$repo:$tag -r $appName.json -t $tag --addr docker-container://buildkitd --timeout "$Timeout"
 
-copa patch -i $registry/$repo:$tag -r $appName.json -t $tag --addr docker-container://buildkitd --timeout "$Timeout"
-
-trivy image --vuln-type os --ignore-unfixed $registry/$repo:$tag | grep -i total
-docker push $registry/$repo:$tag
+    trivy image --vuln-type os --ignore-unfixed $registry/$repo:$tag | grep -i total
+    docker push $registry/$repo:$tag
+fi
 $$,
         'SHELL',
         'f',
