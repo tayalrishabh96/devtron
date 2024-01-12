@@ -3,4 +3,5 @@ DELETE from plugin_step where plugin_id=(select id from plugin_metadata where na
 DELETE from plugin_stage_mapping where plugin_id=(SELECT id from plugin_metadata where name='Copacetic v1.0.0');
 DELETE from pipeline_stage_step_variable where pipeline_stage_step_id in (select pipeline_stage_id from pipeline_stage_step where name='Copacetic v1.0.0');
 DELETE from pipeline_stage_step where name ='Copacetic v1.0.0';
+DELETE from plugin_tag_relation where plugin_id=(SELECT id FROM plugin_metadata WHERE name='Copacetic v1.0.0');
 DELETE from plugin_metadata where name='Copacetic v1.0.0';

@@ -1,6 +1,9 @@
 INSERT INTO plugin_metadata (id,name,description,type,icon,deleted,created_on,created_by,updated_on,updated_by)
 VALUES (nextval('id_seq_plugin_metadata'),'Copacetic v1.0.0','This plugin is used to patch the container image vulnerabilities (Patching for Multi Architecture Builds not supported currently).','PRESET','https://raw.githubusercontent.com/devtron-labs/devtron/copacetic-plugin/assets/copa-plugin-icon.png',false,'now()',1,'now()',1);
 
+INSERT INTO "plugin_tag_relation" ("id", "tag_id", "plugin_id", "created_on", "created_by", "updated_on", "updated_by") VALUES (nextval('id_seq_plugin_tag_relation'), (SELECT id FROM plugin_tag WHERE name='Security'), (SELECT id FROM plugin_metadata WHERE name='Copacetic v1.0.0'),'now()', 1, 'now()', 1);
+INSERT INTO "plugin_tag_relation" ("id", "tag_id", "plugin_id", "created_on", "created_by", "updated_on", "updated_by") VALUES (nextval('id_seq_plugin_tag_relation'), (SELECT id FROM plugin_tag WHERE name='DevSecOps'), (SELECT id FROM plugin_metadata WHERE name='Copacetic v1.0.0'),'now()', 1, 'now()', 1);
+
 INSERT INTO plugin_stage_mapping (id,plugin_id,stage_type,created_on,created_by,updated_on,updated_by)
 VALUES (nextval('id_seq_plugin_stage_mapping'),(SELECT id from plugin_metadata where name='Copacetic v1.0.0'), 0,'now()',1,'now()',1);
 
